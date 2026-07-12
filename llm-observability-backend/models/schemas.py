@@ -1,0 +1,41 @@
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
+
+
+class CompleteRequest(BaseModel):
+    prompt: str
+    prompt_version_id: Optional[str] = None
+    model: Optional[str] = None
+    expected_keywords: Optional[list[str]] = None
+
+
+class CompleteResponse(BaseModel):
+    response_text: str
+    latency_ms: float
+    prompt_tokens: int
+    completion_tokens: int
+    cost_usd: float
+    evaluation: dict
+    error: Optional[str] = None
+
+
+class PromptVersionCreate(BaseModel):
+    name: str
+    template: str
+    description: Optional[str] = None
+
+
+class PromptVersion(PromptVersionCreate):
+    id: str
+    created_at: datetime
+    avg_score: Optional[float] = None
+    call_count: int = 0
+
+
+class EvalRunRequest(BaseModel):
+    prompt_version_id: str
+    test_cases: list[dict] = Field(
+        default_factory=list,
+        description="Each item: {'input': str, 'expected_keywords': [str]}",
+    )
