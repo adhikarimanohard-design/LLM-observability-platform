@@ -8,7 +8,7 @@ load_dotenv()
 from routes import complete, metrics, prompts, eval as eval_route, auth as auth_route
 from services.db import ping
 
-FRONTEND_ORIGIN = "https://llm-observability-platform-seven.vercel.app/"
+FRONTEND_ORIGIN = "https://llm-observability-platform-seven.vercel.app"
 
 app = FastAPI(
     title="LLM Observability & Evaluation Platform",
