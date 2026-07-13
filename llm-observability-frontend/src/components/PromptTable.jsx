@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { GitBranch, Plus, X } from 'lucide-react'
-import { createPrompt } from '../api'
+import { GitBranch, Plus, X, Trash2 } from 'lucide-react'
+import { createPrompt, deletePrompt } from '../api'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
 
@@ -33,6 +33,20 @@ export default function PromptTable({ prompts, onCreated, onSelectPrompt, select
       pushToast(`Failed to save prompt: ${err.message}`, 'error')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation()
+    if (!requireAuth()) return
+    if (!confirm('Are you sure you want to delete this prompt version and all its logs?')) return
+    
+    try {
+      await deletePrompt(id)
+      onCreated?.()
+      pushToast('Prompt deleted successfully.', 'success')
+    } catch (err) {
+      pushToast(`Failed to delete prompt: ${err.message}`, 'error')
     }
   }
 
@@ -90,6 +104,7 @@ export default function PromptTable({ prompts, onCreated, onSelectPrompt, select
               <th>Name</th>
               <th>Calls</th>
               <th>Avg Score</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -104,7 +119,16 @@ export default function PromptTable({ prompts, onCreated, onSelectPrompt, select
               >
                 <td style={{ color: '#f2f4f8' }}>{p.name}</td>
                 <td>{p.call_count}</td>
-                <td>{p.avg_score ?? '—'}</td>
+                <td>{p.avg_score != null ? Math.round(p.avg_score) : '—'}</td>
+                <td style={{ textAlign: 'right' }}>
+                  <button 
+                    className="secondary icon-btn" 
+                    onClick={(e) => handleDelete(e, p.id)}
+                    title="Delete prompt"
+                  >
+                    <Trash2 size={14} color="#ef4444" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
