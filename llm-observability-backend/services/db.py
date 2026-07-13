@@ -10,6 +10,7 @@ requests_collection = db["requests"]
 prompts_collection = db["prompts"]
 evaluations_collection = db["evaluations"]
 alerts_collection = db["alerts"]
+users_collection = db["users"]
 
 
 async def ping() -> bool:
