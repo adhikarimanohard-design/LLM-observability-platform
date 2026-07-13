@@ -12,7 +12,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { getMetrics, getPrompts, getHealth } from './api'
 
 function Dashboard() {
-  const { user, logout, token, setAuthModalOpen } = useAuth()
+  const { user, logout, token, setAuthModalOpen, authModalOpen } = useAuth()
   const [metrics, setMetrics] = useState(null)
   const [prompts, setPrompts] = useState([])
   const [healthy, setHealthy] = useState(null)
@@ -48,45 +48,47 @@ function Dashboard() {
 
   return (
     <div className="app-shell">
-      <motion.header
-        className="app-header"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div className="header-left">
-          <span className="logo-emoji header-logo">🤖</span>
-          <div>
-            <h1>LLM Observability &amp; Evaluation Platform</h1>
-            <div className="subtitle">cost · latency · quality — tracked per request</div>
-          </div>
-        </div>
-        <div className="header-right">
-          <div className="status-pill">
-            <span className={`status-dot ${healthy ? 'ok' : 'bad'}`} />
-            {healthy === null ? 'checking…' : healthy ? 'backend online' : 'backend unreachable'}
-          </div>
-          {token ? (
-            <div className="user-pill">
-              <span>{user?.name || user?.email}</span>
-              <button className="secondary icon-btn" onClick={logout} title="Log out">
-                <LogOut size={13} />
-              </button>
+      <div className={authModalOpen ? 'dashboard-content blurred' : 'dashboard-content'}>
+        <motion.header
+          className="app-header"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="header-left">
+            <span className="logo-emoji header-logo">🤖</span>
+            <div>
+              <h1>LLM Observability &amp; Evaluation Platform</h1>
+              <div className="subtitle">cost · latency · quality — tracked per request</div>
             </div>
-          ) : (
-            <button onClick={() => setAuthModalOpen(true)}>
-              <LogIn size={14} />
-              Sign In
-            </button>
-          )}
-        </div>
-      </motion.header>
+          </div>
+          <div className="header-right">
+            <div className="status-pill">
+              <span className={`status-dot ${healthy ? 'ok' : 'bad'}`} />
+              {healthy === null ? 'checking…' : healthy ? 'backend online' : 'backend unreachable'}
+            </div>
+            {token ? (
+              <div className="user-pill">
+                <span>{user?.name || user?.email}</span>
+                <button className="secondary icon-btn" onClick={logout} title="Log out">
+                  <LogOut size={13} />
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => setAuthModalOpen(true)}>
+                <LogIn size={14} />
+                Sign In
+              </button>
+            )}
+          </div>
+        </motion.header>
 
-      <MetricCards metrics={metrics} loading={loading} />
-      <TrendChart timeseries={metrics?.timeseries} loading={loading} />
-      <TestConsole onLogged={refreshMetrics} />
-      <PromptTable prompts={prompts} onCreated={refreshPrompts} />
-      <Footer />
+        <MetricCards metrics={metrics} loading={loading} />
+        <TrendChart timeseries={metrics?.timeseries} loading={loading} />
+        <TestConsole onLogged={refreshMetrics} />
+        <PromptTable prompts={prompts} onCreated={refreshPrompts} />
+        <Footer />
+      </div>
       <AuthModal />
     </div>
   )
