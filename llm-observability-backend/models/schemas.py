@@ -17,3 +17,13 @@ class EvalRunRequest(BaseModel):
     prompt: str
     response: str
     model: Optional[str] = None
+
+# --- Added Auth Schemas ---
+class SignupRequest(BaseModel):
+    username: str
+    password: str
+    email: Optional[str] = None
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
