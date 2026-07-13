@@ -5,7 +5,7 @@ import { createPrompt } from '../api'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
 
-export default function PromptTable({ prompts, onCreated }) {
+export default function PromptTable({ prompts, onCreated, onSelectPrompt, selectedPromptId }) {
   const [showForm, setShowForm] = useState(false)
   const [name, setName] = useState('')
   const [template, setTemplate] = useState('')
@@ -94,7 +94,14 @@ export default function PromptTable({ prompts, onCreated }) {
           </thead>
           <tbody>
             {prompts.map((p) => (
-              <tr key={p.id}>
+              <tr 
+                key={p.id} 
+                onClick={() => onSelectPrompt?.(p.id, p.template)}
+                style={{ 
+                  cursor: 'pointer', 
+                  backgroundColor: selectedPromptId === p.id ? 'rgba(244, 114, 182, 0.1)' : 'transparent' 
+                }}
+              >
                 <td style={{ color: '#f2f4f8' }}>{p.name}</td>
                 <td>{p.call_count}</td>
                 <td>{p.avg_score ?? '—'}</td>
