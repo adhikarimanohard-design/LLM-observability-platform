@@ -1,4 +1,3 @@
-
 """Lightweight, dependency-free evaluation heuristics.
 
 These are intentionally simple (length checks, refusal/error detection,
