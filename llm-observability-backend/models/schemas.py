@@ -1,3 +1,4 @@
+
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 
@@ -18,7 +19,6 @@ class EvalRunRequest(BaseModel):
     response: str
     model: Optional[str] = None
 
-# --- Added Auth Schemas ---
 class SignupRequest(BaseModel):
     username: str
     password: str
@@ -27,3 +27,11 @@ class SignupRequest(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+class UserOut(BaseModel):
+    username: str
+    email: Optional[str] = None
