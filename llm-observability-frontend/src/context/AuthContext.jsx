@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
     return raw ? JSON.parse(raw) : null
   })
   const [checking, setChecking] = useState(true)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
 
   useEffect(() => {
     if (token) {
@@ -49,6 +50,7 @@ export function AuthProvider({ children }) {
     setUser(data.user)
     localStorage.setItem('llm_obs_token', data.access_token)
     localStorage.setItem('llm_obs_user', JSON.stringify(data.user))
+    setAuthModalOpen(false)
   }, [])
 
   const signup = useCallback(async (name, email, password) => {
@@ -57,6 +59,7 @@ export function AuthProvider({ children }) {
     setUser(data.user)
     localStorage.setItem('llm_obs_token', data.access_token)
     localStorage.setItem('llm_obs_user', JSON.stringify(data.user))
+    setAuthModalOpen(false)
   }, [])
 
   const logout = useCallback(() => {
@@ -66,8 +69,28 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('llm_obs_user')
   }, [])
 
+  // Call this before any action that requires login.
+  // Returns true if already authenticated, otherwise opens the modal and returns false.
+  const requireAuth = useCallback(() => {
+    if (token) return true
+    setAuthModalOpen(true)
+    return false
+  }, [token])
+
   return (
-    <AuthContext.Provider value={{ token, user, checking, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        checking,
+        login,
+        signup,
+        logout,
+        requireAuth,
+        authModalOpen,
+        setAuthModalOpen,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
