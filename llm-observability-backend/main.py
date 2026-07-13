@@ -8,7 +8,7 @@ load_dotenv()
 from routes import complete, metrics, prompts, eval as eval_route, auth as auth_route
 from services.db import ping
 
-FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "*")
+FRONTEND_ORIGIN = "https://llm-observability-platform-ef9z.vercel.app"
 
 app = FastAPI(
     title="LLM Observability & Evaluation Platform",
@@ -18,7 +18,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_ORIGIN] if FRONTEND_ORIGIN != "*" else ["*"],
+    allow_origins=[FRONTEND_ORIGIN],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
