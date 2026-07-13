@@ -28,7 +28,6 @@ export function AuthProvider({ children }) {
     async function verify() {
       if (!token) {
         setChecking(false)
-        setAuthModalOpen(true) // show login popup by default when not authenticated
         return
       }
       try {
@@ -37,7 +36,6 @@ export function AuthProvider({ children }) {
         localStorage.setItem('llm_obs_user', JSON.stringify(data))
       } catch {
         logout()
-        setAuthModalOpen(true)
       } finally {
         setChecking(false)
       }
