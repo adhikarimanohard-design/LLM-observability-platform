@@ -21,7 +21,7 @@ app.add_middleware(
     allow_origins=[FRONTEND_ORIGIN],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"], # Added to fix Network Error on POST requests
 )
 
 app.include_router(complete.router, prefix="/api", tags=["complete"])
@@ -36,16 +36,16 @@ async def health():
     db_ok = await ping()
     return {"status": "ok" if db_ok else "degraded", "db_connected": db_ok}
 
-
 @app.head("/health")
 async def health_head():
     return Response(status_code=200)
 
-
 @app.get("/")
 async def root():
-    return {"message": "LLM Observability & Evaluation Platform API", "docs": "/docs"}
-
+    return {
+        "message": "LLM Observability & Evaluation Platform API",
+        "docs": "/docs"
+    }
 
 @app.head("/")
 async def root_head():
