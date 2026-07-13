@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { GitBranch, Plus, X } from 'lucide-react'
 import { createPrompt } from '../api'
 import { useToast } from './Toast'
+import { useAuth } from '../context/AuthContext'
 
 export default function PromptTable({ prompts, onCreated }) {
   const [showForm, setShowForm] = useState(false)
@@ -10,8 +11,15 @@ export default function PromptTable({ prompts, onCreated }) {
   const [template, setTemplate] = useState('')
   const [saving, setSaving] = useState(false)
   const pushToast = useToast()
+  const { requireAuth } = useAuth()
+
+  const openForm = () => {
+    if (!requireAuth()) return
+    setShowForm((s) => !s)
+  }
 
   const save = async () => {
+    if (!requireAuth()) return
     if (!name.trim() || !template.trim()) return
     setSaving(true)
     try {
@@ -40,7 +48,7 @@ export default function PromptTable({ prompts, onCreated }) {
           <GitBranch size={15} color="#f472b6" />
           Prompt Versions
         </span>
-        <button className={showForm ? 'secondary' : ''} onClick={() => setShowForm((s) => !s)}>
+        <button className={showForm ? 'secondary' : ''} onClick={openForm}>
           {showForm ? <X size={13} /> : <Plus size={13} />}
           {showForm ? 'Cancel' : 'New Version'}
         </button>
