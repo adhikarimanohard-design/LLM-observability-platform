@@ -2,30 +2,23 @@ import random
 
 async def evaluate_response(prompt: str, response_text: str, expected_keywords: list[str] | None = None) -> dict:
     issues = []
-    # Start with a base score range of 75-95 to ensure natural variance
-    score = random.randint(75, 95)
+    # 1. Start with a randomized base between 70 and 98 to force immediate fluctuation
+    score = random.randint(70, 98)
 
     if not response_text or not response_text.strip():
         return {"score": 0, "issues": ["empty_response"], "passed": False}
 
-    # Heuristic Checks
+    # 2. Heuristic Penalties
     word_count = len(response_text.split())
     if word_count < 15:
-        score -= 20
+        score -= random.randint(5, 15)
         issues.append("too_short")
     
-    # Check for refusal
-    refusal_markers = ["i cannot", "i am an ai", "i'm sorry"]
-    if any(marker in response_text.lower() for marker in refusal_markers):
-        score -= 30
-        issues.append("possible_refusal")
+    # 3. Add jitter (-3 to +3) to simulate subjectivity
+    score += random.randint(-3, 3)
 
-    # Add artificial "fluctuation" noise (-5 to +5)
-    # This ensures that even the exact same prompt output will have a different score
-    score += random.randint(-5, 5)
-
-    # Bound the score
-    final_score = max(10, min(100, score))
+    # 4. Final bounds check
+    final_score = max(5, min(100, score))
 
     return {
         "score": final_score,
