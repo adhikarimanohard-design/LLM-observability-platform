@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'https://llm-observability-platform-5.onrender.com'
-
 const api = axios.create({ baseURL: API_BASE_URL })
 
 export const getMetrics = (hours = 24) =>
