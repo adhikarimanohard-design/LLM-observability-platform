@@ -45,7 +45,10 @@ function Dashboard() {
       .then((h) => setHealthy(h.status === 'ok'))
       .catch(() => setHealthy(false))
 
-    const interval = setInterval(refreshMetrics, 15000)
+    const interval = setInterval(() => {
+      refreshMetrics()
+      refreshPrompts()
+    }, 15000)
     return () => clearInterval(interval)
   }, [refreshMetrics, refreshPrompts])
 
@@ -100,7 +103,10 @@ function Dashboard() {
         <TrendChart timeseries={metrics?.timeseries} loading={loading} />
         
         <TestConsole 
-          onLogged={refreshMetrics} 
+          onLogged={() => {
+            refreshMetrics()
+            refreshPrompts()
+          }} 
           selectedPromptId={selectedPromptId}
           selectedPromptTemplate={selectedPromptTemplate}
           onClearSelection={handleClearSelection}
