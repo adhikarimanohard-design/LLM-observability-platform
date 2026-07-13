@@ -1,5 +1,6 @@
+
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
@@ -37,6 +38,16 @@ async def health():
     return {"status": "ok" if db_ok else "degraded", "db_connected": db_ok}
 
 
+@app.head("/health")
+async def health_head():
+    return Response(status_code=200)
+
+
 @app.get("/")
 async def root():
     return {"message": "LLM Observability & Evaluation Platform API", "docs": "/docs"}
+
+
+@app.head("/")
+async def root_head():
+    return Response(status_code=200)
