@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Terminal, Send, Loader2, X } from 'lucide-react'
@@ -23,16 +24,12 @@ export default function TestConsole({ onLogged, selectedPromptId, selectedPrompt
     if (!prompt.trim() && !selectedPromptId) return
     setLoading(true)
     try {
-      const payload = selectedPromptId
-        ? { 
-            model: "llama-3.1-8b-instant", 
-            prompt_version_id: selectedPromptId, 
-            input_variables: { input: prompt } 
-          }
-        : { 
-            model: "llama-3.1-8b-instant", 
-            prompt 
-          }
+      const payload = {
+        model: "llama-3.1-8b-instant",
+        prompt: prompt || "", 
+        prompt_version_id: selectedPromptId || null,
+        input_variables: selectedPromptId ? { input: prompt } : null
+      }
 
       const data = await runComplete(payload)
       setResult(data)
