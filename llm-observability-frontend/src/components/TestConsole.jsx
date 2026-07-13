@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Terminal, Send, Loader2, X } from 'lucide-react'
