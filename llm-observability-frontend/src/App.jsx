@@ -18,6 +18,9 @@ function Dashboard() {
   const [healthy, setHealthy] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const [selectedPromptId, setSelectedPromptId] = useState(null)
+  const [selectedPromptTemplate, setSelectedPromptTemplate] = useState('')
+
   const refreshMetrics = useCallback(async () => {
     try {
       const data = await getMetrics(24)
@@ -45,6 +48,16 @@ function Dashboard() {
     const interval = setInterval(refreshMetrics, 15000)
     return () => clearInterval(interval)
   }, [refreshMetrics, refreshPrompts])
+
+  const handleSelectPrompt = (id, template) => {
+    setSelectedPromptId(id)
+    setSelectedPromptTemplate(template)
+  }
+
+  const handleClearSelection = () => {
+    setSelectedPromptId(null)
+    setSelectedPromptTemplate('')
+  }
 
   return (
     <div className="app-shell">
@@ -85,8 +98,21 @@ function Dashboard() {
 
         <MetricCards metrics={metrics} loading={loading} />
         <TrendChart timeseries={metrics?.timeseries} loading={loading} />
-        <TestConsole onLogged={refreshMetrics} />
-        <PromptTable prompts={prompts} onCreated={refreshPrompts} />
+        
+        <TestConsole 
+          onLogged={refreshMetrics} 
+          selectedPromptId={selectedPromptId}
+          selectedPromptTemplate={selectedPromptTemplate}
+          onClearSelection={handleClearSelection}
+        />
+        
+        <PromptTable 
+          prompts={prompts} 
+          onCreated={refreshPrompts} 
+          onSelectPrompt={handleSelectPrompt}
+          selectedPromptId={selectedPromptId}
+        />
+        
         <Footer />
       </div>
       <AuthModal />
