@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from routes import complete, metrics, prompts, eval as eval_route
+from routes import complete, metrics, prompts, eval as eval_route, auth as auth_route
 from services.db import ping
 
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "*")
@@ -28,6 +28,7 @@ app.include_router(complete.router, prefix="/api", tags=["complete"])
 app.include_router(metrics.router, prefix="/api", tags=["metrics"])
 app.include_router(prompts.router, prefix="/api", tags=["prompts"])
 app.include_router(eval_route.router, prefix="/api", tags=["eval"])
+app.include_router(auth_route.router, prefix="/api", tags=["auth"])
 
 
 @app.get("/health")
