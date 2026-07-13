@@ -39,3 +39,26 @@ class EvalRunRequest(BaseModel):
         default_factory=list,
         description="Each item: {'input': str, 'expected_keywords': [str]}",
     )
+
+
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str = Field(min_length=6)
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class UserOut(BaseModel):
+    id: str
+    name: str
+    email: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserOut
