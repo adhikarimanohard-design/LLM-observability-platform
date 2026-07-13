@@ -156,6 +156,21 @@ body {
   font-weight: 600;
 }
 
+.glow-name {
+  background: linear-gradient(120deg, var(--grad-violet), var(--grad-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.3)); }
+  50% { filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.5)); }
+}
+
 /* ---------- Auth Screen ---------- */
 .auth-shell {
   min-height: 100vh;
