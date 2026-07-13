@@ -1,19 +1,18 @@
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { LogOut } from 'lucide-react'
+import { LogOut, LogIn } from 'lucide-react'
 import MetricCards from './components/MetricCards'
 import TrendChart from './components/TrendChart'
 import TestConsole from './components/TestConsole'
 import PromptTable from './components/PromptTable'
 import Footer from './components/Footer'
-import Landing from './components/Landing'
-import AuthScreen from './components/AuthScreen'
+import AuthModal from './components/AuthModal'
 import { ToastProvider } from './components/Toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { getMetrics, getPrompts, getHealth } from './api'
 
 function Dashboard() {
-  const { user, logout } = useAuth()
+  const { user, logout, token, setAuthModalOpen } = useAuth()
   const [metrics, setMetrics] = useState(null)
   const [prompts, setPrompts] = useState([])
   const [healthy, setHealthy] = useState(null)
@@ -67,12 +66,19 @@ function Dashboard() {
             <span className={`status-dot ${healthy ? 'ok' : 'bad'}`} />
             {healthy === null ? 'checking…' : healthy ? 'backend online' : 'backend unreachable'}
           </div>
-          <div className="user-pill">
-            <span>{user?.name || user?.email}</span>
-            <button className="secondary icon-btn" onClick={logout} title="Log out">
-              <LogOut size={13} />
+          {token ? (
+            <div className="user-pill">
+              <span>{user?.name || user?.email}</span>
+              <button className="secondary icon-btn" onClick={logout} title="Log out">
+                <LogOut size={13} />
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => setAuthModalOpen(true)}>
+              <LogIn size={14} />
+              Sign In
             </button>
-          </div>
+          )}
         </div>
       </motion.header>
 
@@ -81,36 +87,16 @@ function Dashboard() {
       <TestConsole onLogged={refreshMetrics} />
       <PromptTable prompts={prompts} onCreated={refreshPrompts} />
       <Footer />
+      <AuthModal />
     </div>
   )
-}
-
-function AuthGate() {
-  const { token, checking } = useAuth()
-  const [view, setView] = useState('landing') // 'landing' | 'auth'
-
-  if (checking) {
-    return (
-      <div className="auth-shell">
-        <div className="skeleton" style={{ width: 340, height: 420, borderRadius: 20 }} />
-      </div>
-    )
-  }
-
-  if (token) return <Dashboard />
-
-  if (view === 'auth') {
-    return <AuthScreen onBack={() => setView('landing')} />
-  }
-
-  return <Landing onGetStarted={() => setView('auth')} />
 }
 
 export default function App() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <AuthGate />
+        <Dashboard />
       </ToastProvider>
     </AuthProvider>
   )
