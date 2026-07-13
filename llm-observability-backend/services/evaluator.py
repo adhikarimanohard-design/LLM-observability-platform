@@ -1,4 +1,3 @@
-
 import random
 
 async def evaluate_response(prompt: str, response_text: str, expected_keywords: list[str] | None = None) -> dict:
