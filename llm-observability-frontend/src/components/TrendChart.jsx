@@ -1,37 +1,89 @@
+import { motion } from 'framer-motion'
+import { TrendingUp } from 'lucide-react'
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
 } from 'recharts'
 
-export default function TrendChart({ timeseries }) {
+export default function TrendChart({ timeseries, loading }) {
   const hasData = timeseries && timeseries.length > 0
 
   return (
-    <div className="panel">
-      <h2>Latency &amp; Cost Trend</h2>
-      {!hasData ? (
+    <motion.div
+      className="panel"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.1 }}
+    >
+      <h2>
+        <span className="icon-label">
+          <TrendingUp size={15} color="#8b5cf6" />
+          Latency &amp; Cost Trend
+        </span>
+      </h2>
+      {loading ? (
+        <div className="skeleton" style={{ height: 220, width: '100%' }} />
+      ) : !hasData ? (
         <div className="empty-state">No requests logged yet in this window. Send one from the console below.</div>
       ) : (
-        <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={timeseries}>
-            <CartesianGrid stroke="#232b36" strokeDasharray="3 3" />
-            <XAxis dataKey="bucket" tick={{ fill: '#8b98a5', fontSize: 10 }} hide={timeseries.length > 8} />
-            <YAxis yAxisId="left" tick={{ fill: '#8b98a5', fontSize: 11 }} />
-            <YAxis yAxisId="right" orientation="right" tick={{ fill: '#8b98a5', fontSize: 11 }} />
-            <Tooltip
-              contentStyle={{ background: '#151b23', border: '1px solid #232b36', fontSize: 12 }}
-              labelStyle={{ color: '#8b98a5' }}
+        <ResponsiveContainer width="100%" height={240}>
+          <AreaChart data={timeseries}>
+            <defs>
+              <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="costGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#22d3ee" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="bucket"
+              tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
+              hide={timeseries.length > 8}
+              axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+              tickLine={false}
             />
-            <Line yAxisId="left" type="monotone" dataKey="avg_latency_ms" stroke="#5eb1f0" strokeWidth={2} dot={false} name="Avg Latency (ms)" />
-            <Line yAxisId="right" type="monotone" dataKey="cost_usd" stroke="#f0b35e" strokeWidth={2} dot={false} name="Cost (USD)" />
-          </LineChart>
+            <YAxis yAxisId="left" tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
+            <YAxis yAxisId="right" orientation="right" tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
+            <Tooltip
+              contentStyle={{
+                background: '#0d0f16',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 10,
+                fontSize: 12,
+                fontFamily: 'IBM Plex Mono',
+              }}
+              labelStyle={{ color: '#8b93a7' }}
+            />
+            <Area
+              yAxisId="left"
+              type="monotone"
+              dataKey="avg_latency_ms"
+              stroke="#8b5cf6"
+              strokeWidth={2}
+              fill="url(#latencyGradient)"
+              name="Avg Latency (ms)"
+            />
+            <Area
+              yAxisId="right"
+              type="monotone"
+              dataKey="cost_usd"
+              stroke="#22d3ee"
+              strokeWidth={2}
+              fill="url(#costGradient)"
+              name="Cost (USD)"
+            />
+          </AreaChart>
         </ResponsiveContainer>
       )}
-    </div>
+    </motion.div>
   )
 }
