@@ -24,8 +24,15 @@ export default function TestConsole({ onLogged, selectedPromptId, selectedPrompt
     setLoading(true)
     try {
       const payload = selectedPromptId
-        ? { prompt_version_id: selectedPromptId, input_variables: { input: prompt } }
-        : { prompt }
+        ? { 
+            model: "llama-3.1-8b-instant", 
+            prompt_version_id: selectedPromptId, 
+            input_variables: { input: prompt } 
+          }
+        : { 
+            model: "llama-3.1-8b-instant", 
+            prompt 
+          }
 
       const data = await runComplete(payload)
       setResult(data)
