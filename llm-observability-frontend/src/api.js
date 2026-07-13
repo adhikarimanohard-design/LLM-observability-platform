@@ -12,9 +12,8 @@ export const getPrompts = () => api.get('/api/prompts').then((r) => r.data)
 export const createPrompt = (payload) =>
   api.post('/api/prompts', payload).then((r) => r.data)
 
-// Added deletePrompt function
 export const deletePrompt = (id) => 
-  api.delete(`/prompts/${id}`).then((r) => r.data)
+  api.delete(`/api/prompts/${id}`).then((r) => r.data)
 
 export const runComplete = (payload) =>
   api.post('/api/complete', payload).then((r) => r.data)
