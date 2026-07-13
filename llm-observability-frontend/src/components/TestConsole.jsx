@@ -1,16 +1,20 @@
+
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Terminal, Send, Loader2 } from 'lucide-react'
 import { runComplete } from '../api'
 import { useToast } from './Toast'
+import { useAuth } from '../context/AuthContext'
 
 export default function TestConsole({ onLogged }) {
   const [prompt, setPrompt] = useState('Explain what a vector database is in two sentences.')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const pushToast = useToast()
+  const { requireAuth } = useAuth()
 
   const send = async () => {
+    if (!requireAuth()) return
     if (!prompt.trim()) return
     setLoading(true)
     try {
