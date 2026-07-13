@@ -1,11 +1,15 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { GitBranch, Plus, X } from 'lucide-react'
 import { createPrompt } from '../api'
+import { useToast } from './Toast'
 
 export default function PromptTable({ prompts, onCreated }) {
   const [showForm, setShowForm] = useState(false)
   const [name, setName] = useState('')
   const [template, setTemplate] = useState('')
   const [saving, setSaving] = useState(false)
+  const pushToast = useToast()
 
   const save = async () => {
     if (!name.trim() || !template.trim()) return
@@ -16,38 +20,58 @@ export default function PromptTable({ prompts, onCreated }) {
       setTemplate('')
       setShowForm(false)
       onCreated?.()
+      pushToast('Prompt version saved.', 'success')
+    } catch (err) {
+      pushToast(`Failed to save prompt: ${err.message}`, 'error')
     } finally {
       setSaving(false)
     }
   }
 
   return (
-    <div className="panel">
+    <motion.div
+      className="panel"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.3 }}
+    >
       <h2>
-        Prompt Versions
-        <button onClick={() => setShowForm((s) => !s)}>{showForm ? 'Cancel' : '+ New Version'}</button>
+        <span className="icon-label">
+          <GitBranch size={15} color="#f472b6" />
+          Prompt Versions
+        </span>
+        <button className={showForm ? 'secondary' : ''} onClick={() => setShowForm((s) => !s)}>
+          {showForm ? <X size={13} /> : <Plus size={13} />}
+          {showForm ? 'Cancel' : 'New Version'}
+        </button>
       </h2>
 
-      {showForm && (
-        <div style={{ marginBottom: 16 }}>
-          <div className="console-row">
-            <input
-              placeholder="Version name (e.g. summarizer-v3)"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              style={{ flex: 1 }}
-            />
-          </div>
-          <div className="console-row">
-            <textarea
-              placeholder="Prompt template — use {input} as a placeholder"
-              value={template}
-              onChange={(e) => setTemplate(e.target.value)}
-            />
-          </div>
-          <button onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Version'}</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ overflow: 'hidden', marginBottom: 16 }}
+          >
+            <div className="console-row">
+              <input
+                placeholder="Version name (e.g. summarizer-v3)"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="console-row">
+              <textarea
+                placeholder="Prompt template — use {input} as a placeholder"
+                value={template}
+                onChange={(e) => setTemplate(e.target.value)}
+              />
+            </div>
+            <button onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Version'}</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {prompts.length === 0 ? (
         <div className="empty-state">No prompt versions registered yet.</div>
@@ -63,7 +87,7 @@ export default function PromptTable({ prompts, onCreated }) {
           <tbody>
             {prompts.map((p) => (
               <tr key={p.id}>
-                <td>{p.name}</td>
+                <td style={{ color: '#f2f4f8' }}>{p.name}</td>
                 <td>{p.call_count}</td>
                 <td>{p.avg_score ?? '—'}</td>
               </tr>
@@ -71,6 +95,6 @@ export default function PromptTable({ prompts, onCreated }) {
           </tbody>
         </table>
       )}
-    </div>
+    </motion.div>
   )
 }
