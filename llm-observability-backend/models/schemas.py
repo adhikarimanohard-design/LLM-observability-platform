@@ -12,3 +12,8 @@ class CompletionRequest(BaseModel):
     prompt: Optional[str] = None
     prompt_version_id: Optional[str] = None
     input_variables: Optional[Dict[str, Any]] = None
+
+class EvalRunRequest(BaseModel):
+    prompt: str
+    response: str
+    model: Optional[str] = None
