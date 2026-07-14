@@ -1,6 +1,7 @@
 import os
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,6 +28,14 @@ app.include_router(metrics.router, prefix="/api", tags=["metrics"])
 app.include_router(prompts.router, prefix="/api", tags=["prompts"])
 app.include_router(eval_route.router, prefix="/api", tags=["eval"])
 app.include_router(auth_route.router, prefix="/api", tags=["auth"])
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal server error: {str(exc)}"},
+    )
 
 
 @app.get("/health")
