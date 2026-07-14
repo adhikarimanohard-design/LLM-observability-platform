@@ -363,7 +363,7 @@ body::after {
 }
 
 .graph-panel h2 {
-  padding: 0 24px;
+  padding: 0 20px;
 }
 
 .chart-container {
@@ -372,6 +372,7 @@ body::after {
   min-height: 520px;
   position: relative;
   margin-top: 20px;
+  padding: 0 8px;
 }
 
 .recharts-wrapper {
