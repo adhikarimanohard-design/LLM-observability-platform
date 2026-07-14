@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'https://llm-observability-platform-7.onrender.com'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://llm-observability-platform-7.onrender.com'
 
 // Longer timeout avoids false "Network Error" messages on slow/cold responses,
 // which previously caused accidental duplicate submissions on retry.
