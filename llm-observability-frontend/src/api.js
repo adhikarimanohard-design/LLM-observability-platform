@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'https://llm-observability-platform-7.onrender.com'
+const API_BASE_URL='https://llm-observability-platform-7.onrender.com'
+
 
 const api = axios.create({ baseURL: API_BASE_URL })
 
@@ -24,3 +25,4 @@ export const runEval = (payload) =>
 export const getHealth = () => api.get('/health').then((r) => r.data)
 
 export default api
+
