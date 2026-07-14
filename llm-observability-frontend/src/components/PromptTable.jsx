@@ -20,6 +20,7 @@ export default function PromptTable({ prompts, onCreated, onSelectPrompt, select
   };
 
   const save = async () => {
+    if (!requireAuth()) return;
     if (!name.trim() || !template.trim()) {
       pushToast('Name and template required', 'error');
       return;
@@ -39,6 +40,7 @@ export default function PromptTable({ prompts, onCreated, onSelectPrompt, select
 
   const handleDelete = async (e, id) => {
     e.stopPropagation();
+    if (!requireAuth()) return;
     if (!confirm('Permanently delete this prompt and its logs?')) return;
     setDeletingId(id);
     try {
@@ -62,32 +64,45 @@ export default function PromptTable({ prompts, onCreated, onSelectPrompt, select
       <AnimatePresence>
         {showForm && (
           <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} style={{ overflow: 'hidden' }}>
-            <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-            <textarea placeholder="Template" value={template} onChange={(e) => setTemplate(e.target.value)} />
+            <div className="console-row">
+              <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="console-row">
+              <textarea placeholder="Template" value={template} onChange={(e) => setTemplate(e.target.value)} />
+            </div>
             <button onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save'}</button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <table>
-        <thead>
-          <tr><th>Name</th><th>Calls</th><th>Avg Score</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-          {prompts.map((p) => (
-            <tr key={p.id} onClick={() => onSelectPrompt?.(p.id, p.template)} className={selectedPromptId === p.id ? 'active' : ''}>
-              <td>{p.name}</td>
-              <td>{p.call_count}</td>
-              <td>{p.avg_score != null ? Math.round(p.avg_score) : '—'}</td>
-              <td>
-                <button className="secondary" onClick={(e) => handleDelete(e, p.id)} disabled={deletingId === p.id}>
-                  {deletingId === p.id ? <Loader2 size={14} className="spin" /> : <Trash2 size={14} color="#ef4444" />}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {prompts.length === 0 ? (
+        <div className="empty-state">No prompt versions registered yet.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Calls</th><th>Avg Score</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            {prompts.map((p) => (
+              <tr
+                key={p.id}
+                onClick={() => onSelectPrompt?.(p.id, p.template)}
+                className={selectedPromptId === p.id ? 'active' : ''}
+                style={{ cursor: 'pointer' }}
+              >
+                <td style={{ color: '#f2f4f8' }}>{p.name}</td>
+                <td>{p.call_count}</td>
+                <td>{p.avg_score != null ? Math.round(p.avg_score) : '—'}</td>
+                <td>
+                  <button className="secondary icon-btn" onClick={(e) => handleDelete(e, p.id)} disabled={deletingId === p.id}>
+                    {deletingId === p.id ? <Loader2 size={14} className="spin" /> : <Trash2 size={14} color="#fb7185" />}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </motion.div>
   );
 }
