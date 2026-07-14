@@ -8,8 +8,6 @@ load_dotenv()
 from routes import complete, metrics, prompts, eval as eval_route, auth as auth_route
 from services.db import ping
 
-FRONTEND_ORIGIN = "https://llm-observability-platform-seven.vercel.app"
-
 app = FastAPI(
     title="LLM Observability & Evaluation Platform",
     description="Logs, evaluates, and monitors LLM API calls: cost, latency, and quality.",
@@ -18,17 +16,17 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_ORIGIN],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"], # Added to fix Network Error on POST requests
+    allow_headers=["*"], 
 )
 
 app.include_router(complete.router, prefix="/api", tags=["complete"])
 app.include_router(metrics.router, prefix="/api", tags=["metrics"])
 app.include_router(prompts.router, prefix="/api", tags=["prompts"])
-app.include_router(eval_route.router, prefix="/api", tags=["eval"])
-app.include_router(auth_route.router, prefix="/api", tags=["auth"])
+app.include_router(eval_route.router, prefix="/api/eval", tags=["eval"])
+app.include_router(auth_route.router, prefix="/api/auth", tags=["auth"])
 
 
 @app.get("/health")
