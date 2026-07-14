@@ -25,9 +25,8 @@ app.add_middleware(
 app.include_router(complete.router, prefix="/api", tags=["complete"])
 app.include_router(metrics.router, prefix="/api", tags=["metrics"])
 app.include_router(prompts.router, prefix="/api", tags=["prompts"])
-app.include_router(eval_route.router, prefix="/api/eval", tags=["eval"])
-app.include_router(auth_route.router, prefix="/api/auth", tags=["auth"])
-
+app.include_router(eval_route.router, prefix="/api", tags=["eval"])
+app.include_router(auth_route.router, prefix="/api", tags=["auth"])
 
 @app.get("/health")
 async def health():
