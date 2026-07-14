@@ -37,8 +37,8 @@ async def complete(payload: CompleteRequest):
 
     llm_result = await call_llm(prompt=prompt_text, model=payload.model)
 
-    # Evaluator is synchronous — do NOT await it
-    evaluation = evaluate_response(
+    # Evaluator is async — must be awaited
+    evaluation = await evaluate_response(
         prompt_text, llm_result.text, expected_keywords=payload.expected_keywords
     )
 
