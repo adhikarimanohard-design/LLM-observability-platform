@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, Lock, User, LogIn, UserPlus, Loader2, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -17,6 +18,17 @@ export default function AuthModal() {
     setError('')
   }
 
+  useEffect(() => {
+    if (authModalOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [authModalOpen])
+
   const submit = async (e) => {
     e.preventDefault()
     setError('')
@@ -34,7 +46,7 @@ export default function AuthModal() {
     }
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {authModalOpen && (
         <motion.div
@@ -151,6 +163,7 @@ export default function AuthModal() {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
