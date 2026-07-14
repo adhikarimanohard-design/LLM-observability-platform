@@ -121,6 +121,5 @@ LLM Observability & Evaluation Platform is designed to demonstrate real-world so
 # 👨‍💻 Author
 
 **Adhikari Manohar Dash**
-
-B.Tech CSE Student
-Full Stack & AI Enthusiast
+-B.Tech CSE Student
+-Full Stack & AI Enthusiast
