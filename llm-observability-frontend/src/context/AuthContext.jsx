@@ -10,8 +10,12 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('llm_obs_token'))
   const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem('llm_obs_user')
-    return raw ? JSON.parse(raw) : null
+    try {
+      const raw = localStorage.getItem('llm_obs_user')
+      return raw && raw !== 'undefined' ? JSON.parse(raw) : null
+    } catch (e) {
+      return null
+    }
   })
   const [checking, setChecking] = useState(true)
   const [authModalOpen, setAuthModalOpen] = useState(false)
@@ -45,20 +49,30 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = useCallback(async (email, password) => {
-    const { data } = await api.post('/api/auth/login', { email, password })
-    setToken(data.access_token)
-    setUser(data.user)
-    localStorage.setItem('llm_obs_token', data.access_token)
-    localStorage.setItem('llm_obs_user', JSON.stringify(data.user))
+    const { data } = await api.post('/api/auth/login', { username: email, password })
+    const validToken = data.access_token || data.token
+    
+    setToken(validToken)
+    localStorage.setItem('llm_obs_token', validToken)
+    
+    const userData = data.user || { username: email, email: email }
+    setUser(userData)
+    localStorage.setItem('llm_obs_user', JSON.stringify(userData))
+    
     setAuthModalOpen(false)
   }, [])
 
   const signup = useCallback(async (name, email, password) => {
-    const { data } = await api.post('/api/auth/signup', { name, email, password })
-    setToken(data.access_token)
-    setUser(data.user)
-    localStorage.setItem('llm_obs_token', data.access_token)
-    localStorage.setItem('llm_obs_user', JSON.stringify(data.user))
+    const { data } = await api.post('/api/auth/signup', { username: name, email, password })
+    const validToken = data.access_token || data.token
+
+    setToken(validToken)
+    localStorage.setItem('llm_obs_token', validToken)
+    
+    const userData = data.user || { username: name, email: email }
+    setUser(userData)
+    localStorage.setItem('llm_obs_user', JSON.stringify(userData))
+    
     setAuthModalOpen(false)
   }, [])
 
@@ -69,8 +83,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('llm_obs_user')
   }, [])
 
-  // Call this before any action that requires login.
-  // Returns true if already authenticated, otherwise opens the modal and returns false.
   const requireAuth = useCallback(() => {
     if (token) return true
     setAuthModalOpen(true)
