@@ -17,9 +17,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
-    allow_headers=["*"], 
+    allow_headers=["*"],
 )
 
 app.include_router(complete.router, prefix="/api", tags=["complete"])
@@ -28,21 +28,22 @@ app.include_router(prompts.router, prefix="/api", tags=["prompts"])
 app.include_router(eval_route.router, prefix="/api", tags=["eval"])
 app.include_router(auth_route.router, prefix="/api", tags=["auth"])
 
+
 @app.get("/health")
 async def health():
     db_ok = await ping()
     return {"status": "ok" if db_ok else "degraded", "db_connected": db_ok}
 
+
 @app.head("/health")
 async def health_head():
     return Response(status_code=200)
 
+
 @app.get("/")
 async def root():
-    return {
-        "message": "LLM Observability & Evaluation Platform API",
-        "docs": "/docs"
-    }
+    return {"message": "LLM Observability & Evaluation Platform API", "docs": "/docs"}
+
 
 @app.head("/")
 async def root_head():
