@@ -290,15 +290,15 @@ body::after {
 
 /* Specific class to stretch the graph */
 .graph-panel {
-  padding: 36px 0; /* 0 horizontal padding so the graph hits the edges */
+  padding: 36px 0;
   min-height: 600px;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* Let the numbers hang slightly outside if needed */
+  overflow: visible; 
 }
 
 .graph-panel h2 {
-  padding: 0 36px; /* Put the title padding back so it aligns with the rest of the site */
+  padding: 0 36px;
 }
 
 .chart-container {
@@ -309,13 +309,12 @@ body::after {
   margin-top: 20px;
 }
 
-/* Recharts Overrides to ensure it fills the 100% width container */
 .recharts-wrapper {
   width: 100% !important;
 }
 
 .recharts-surface {
-  overflow: visible; /* Prevents edge numbers from being cut off */
+  overflow: visible;
 }
 
 /* SVG Chart Number Coloring - Forced to White for Contrast */
