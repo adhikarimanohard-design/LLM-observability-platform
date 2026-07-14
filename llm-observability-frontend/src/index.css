@@ -8,12 +8,13 @@
   --text-main: #ffffff;
   --text-muted: #a1a1aa;
   
-  --neon-pink: #ff007f;
   --neon-cyan: #00f0ff;
   --neon-purple: #8a2be2;
   --neon-yellow: #ffea00;
   --neon-orange: #ff6600;
   --neon-green: #00ff66;
+  --neon-blue: #0066ff;
+  --neon-lime: #bfff00;
 
   --font-sans: 'Outfit', sans-serif;
   --font-mono: 'Fira Code', monospace;
@@ -23,7 +24,7 @@
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-pink), var(--neon-cyan)); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-blue), var(--neon-cyan)); border-radius: 10px; }
 
 body {
   background-color: var(--bg-dark);
@@ -48,7 +49,7 @@ body::before, body::after {
 
 body::before {
   background: 
-    radial-gradient(circle at 20% 30%, rgba(255, 0, 127, 0.25), transparent 30%),
+    radial-gradient(circle at 20% 30%, rgba(0, 102, 255, 0.25), transparent 30%),
     radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.25), transparent 30%),
     radial-gradient(circle at 50% 80%, rgba(255, 234, 0, 0.15), transparent 40%);
   animation: bg-drift 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
@@ -97,7 +98,7 @@ body::after {
 .app-header h1 {
   font-size: 44px;
   font-weight: 800;
-  background: linear-gradient(to right, #fff, var(--neon-cyan), var(--neon-pink), #fff);
+  background: linear-gradient(to right, #fff, var(--neon-cyan), var(--neon-blue), var(--neon-lime), #fff);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -210,9 +211,9 @@ body::after {
 }
 
 .metric-card:nth-child(1) { --card-color-1: var(--neon-cyan); --card-color-2: var(--neon-purple); }
-.metric-card:nth-child(2) { --card-color-1: var(--neon-pink); --card-color-2: var(--neon-orange); }
+.metric-card:nth-child(2) { --card-color-1: var(--neon-blue); --card-color-2: var(--neon-orange); }
 .metric-card:nth-child(3) { --card-color-1: var(--neon-yellow); --card-color-2: var(--neon-green); }
-.metric-card:nth-child(4) { --card-color-1: var(--neon-purple); --card-color-2: var(--neon-pink); }
+.metric-card:nth-child(4) { --card-color-1: var(--neon-purple); --card-color-2: var(--neon-lime); }
 
 .metric-card:hover {
   transform: translateY(-10px) scale(1.02);
@@ -243,10 +244,10 @@ body::after {
 }
 
 .metric-card:nth-child(2) .value { 
-  background: linear-gradient(to right, #ffffff, var(--neon-pink)); 
+  background: linear-gradient(to right, #ffffff, var(--neon-blue)); 
   -webkit-background-clip: text; 
   color: transparent; 
-  text-shadow: 0 0 25px rgba(255, 0, 127, 0.5); 
+  text-shadow: 0 0 25px rgba(0, 102, 255, 0.5); 
 }
 
 .metric-card:nth-child(3) .value { 
@@ -287,41 +288,45 @@ body::after {
   margin-bottom: 24px;
 }
 
+/* Specific class to stretch the graph */
 .graph-panel {
-  padding: 36px 0; /* Remove horizontal padding to stretch graph */
-  min-height: 600px; /* Make graph container significantly larger */
+  padding: 36px 0; /* 0 horizontal padding so the graph hits the edges */
+  min-height: 600px;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Ensure nothing breaks out of rounded corners */
+  overflow: visible; /* Let the numbers hang slightly outside if needed */
 }
 
 .graph-panel h2 {
-  padding: 0 36px; /* Add padding back specifically for the title */
+  padding: 0 36px; /* Put the title padding back so it aligns with the rest of the site */
 }
 
 .chart-container {
   flex: 1;
-  width: calc(100% + 40px); /* Extend fully to the edges */
-  min-height: 520px; /* Much taller graph */
+  width: 100%; 
+  min-height: 520px; 
   position: relative;
-  margin: 20px -20px 0 -20px; /* Pull into the padded zones of the panel if any */
+  margin-top: 20px;
 }
 
-/* SVG Chart Number Coloring for Extreme Edges */
+/* Recharts Overrides to ensure it fills the 100% width container */
+.recharts-wrapper {
+  width: 100% !important;
+}
+
+.recharts-surface {
+  overflow: visible; /* Prevents edge numbers from being cut off */
+}
+
+/* SVG Chart Number Coloring - Forced to White for Contrast */
 .chart-container text,
 .recharts-text,
 .recharts-cartesian-axis-tick-value {
-  fill: var(--neon-cyan) !important;
+  fill: #ffffff !important; 
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
-}
-
-.recharts-yAxis text,
-.recharts-yAxis .recharts-cartesian-axis-tick-value {
-  fill: var(--neon-pink) !important;
-  text-shadow: 0 0 10px rgba(255, 0, 127, 0.6);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* ---------- Inputs & Buttons ---------- */
@@ -345,7 +350,7 @@ textarea:focus, input:focus {
 }
 
 button {
-  background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink), var(--neon-orange));
+  background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue), var(--neon-orange));
   background-size: 200% auto;
   color: #fff;
   border: none;
@@ -359,7 +364,7 @@ button {
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation: gradient-shift 4s linear infinite;
-  box-shadow: 0 10px 20px rgba(255, 0, 127, 0.4);
+  box-shadow: 0 10px 20px rgba(0, 102, 255, 0.4);
 }
 
 @keyframes gradient-shift {
