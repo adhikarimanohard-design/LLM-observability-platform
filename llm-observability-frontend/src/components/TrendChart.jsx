@@ -26,64 +26,66 @@ export default function TrendChart({ timeseries, loading }) {
           Latency &amp; Cost Trend
         </span>
       </h2>
-      {loading ? (
-        <div className="skeleton" style={{ height: 220, width: '100%', margin: '0 24px' }} />
-      ) : !hasData ? (
-        <div className="empty-state">No requests logged yet in this window. Send one from the console below.</div>
-      ) : (
-        <ResponsiveContainer width="100%" height={240}>
-          <AreaChart data={timeseries} margin={{ top: 5, right: 16, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="costGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="#22d3ee" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="bucket"
-              tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
-              hide={timeseries.length > 8}
-              axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
-              tickLine={false}
-            />
-            <YAxis yAxisId="left" width={40} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
-            <YAxis yAxisId="right" orientation="right" width={48} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
-            <Tooltip
-              contentStyle={{
-                background: '#0d0f16',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 10,
-                fontSize: 12,
-                fontFamily: 'IBM Plex Mono',
-              }}
-              labelStyle={{ color: '#8b93a7' }}
-            />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="avg_latency_ms"
-              stroke="#8b5cf6"
-              strokeWidth={2}
-              fill="url(#latencyGradient)"
-              name="Avg Latency (ms)"
-            />
-            <Area
-              yAxisId="right"
-              type="monotone"
-              dataKey="cost_usd"
-              stroke="#22d3ee"
-              strokeWidth={2}
-              fill="url(#costGradient)"
-              name="Cost (USD)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      )}
+      <div className="chart-container">
+        {loading ? (
+          <div className="skeleton" style={{ height: 220, width: '100%' }} />
+        ) : !hasData ? (
+          <div className="empty-state">No requests logged yet in this window. Send one from the console below.</div>
+        ) : (
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={timeseries} margin={{ top: 5, right: 12, left: 4, bottom: 0 }}>
+              <defs>
+                <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="costGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#22d3ee" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="bucket"
+                tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
+                hide={timeseries.length > 8}
+                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                tickLine={false}
+              />
+              <YAxis yAxisId="left" width={38} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
+              <YAxis yAxisId="right" orientation="right" width={46} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
+              <Tooltip
+                contentStyle={{
+                  background: '#0d0f16',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 10,
+                  fontSize: 12,
+                  fontFamily: 'IBM Plex Mono',
+                }}
+                labelStyle={{ color: '#8b93a7' }}
+              />
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="avg_latency_ms"
+                stroke="#8b5cf6"
+                strokeWidth={2}
+                fill="url(#latencyGradient)"
+                name="Avg Latency (ms)"
+              />
+              <Area
+                yAxisId="right"
+                type="monotone"
+                dataKey="cost_usd"
+                stroke="#22d3ee"
+                strokeWidth={2}
+                fill="url(#costGradient)"
+                name="Cost (USD)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </motion.div>
   )
 }
