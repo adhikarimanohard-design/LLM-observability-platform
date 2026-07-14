@@ -15,7 +15,7 @@ export default function TrendChart({ timeseries, loading }) {
 
   return (
     <motion.div
-      className="panel"
+      className="panel graph-panel"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.1 }}
@@ -27,12 +27,12 @@ export default function TrendChart({ timeseries, loading }) {
         </span>
       </h2>
       {loading ? (
-        <div className="skeleton" style={{ height: 220, width: '100%' }} />
+        <div className="skeleton" style={{ height: 220, width: '100%', margin: '0 24px' }} />
       ) : !hasData ? (
         <div className="empty-state">No requests logged yet in this window. Send one from the console below.</div>
       ) : (
         <ResponsiveContainer width="100%" height={240}>
-          <AreaChart data={timeseries}>
+          <AreaChart data={timeseries} margin={{ top: 5, right: 16, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="latencyGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.4} />
@@ -51,8 +51,8 @@ export default function TrendChart({ timeseries, loading }) {
               axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
               tickLine={false}
             />
-            <YAxis yAxisId="left" tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
-            <YAxis yAxisId="right" orientation="right" tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
+            <YAxis yAxisId="left" width={40} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
+            <YAxis yAxisId="right" orientation="right" width={48} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
             <Tooltip
               contentStyle={{
                 background: '#0d0f16',
