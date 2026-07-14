@@ -233,14 +233,37 @@ body::after {
 .metric-card .value {
   font-size: 46px;
   font-weight: 800;
-  color: #fff;
-  text-shadow: 0 0 20px rgba(255,255,255,0.3);
 }
 
-.metric-card:nth-child(1) .value { background: linear-gradient(to right, #fff, var(--neon-cyan)); -webkit-background-clip: text; color: transparent; }
-.metric-card:nth-child(2) .value { background: linear-gradient(to right, #fff, var(--neon-pink)); -webkit-background-clip: text; color: transparent; }
+.metric-card:nth-child(1) .value { 
+  background: linear-gradient(to right, #ffffff, var(--neon-cyan)); 
+  -webkit-background-clip: text; 
+  color: transparent; 
+  text-shadow: 0 0 25px rgba(0, 240, 255, 0.5); 
+}
 
-/* ---------- Panels & Graph Area ---------- */
+.metric-card:nth-child(2) .value { 
+  background: linear-gradient(to right, #ffffff, var(--neon-pink)); 
+  -webkit-background-clip: text; 
+  color: transparent; 
+  text-shadow: 0 0 25px rgba(255, 0, 127, 0.5); 
+}
+
+.metric-card:nth-child(3) .value { 
+  background: linear-gradient(to right, #ffffff, var(--neon-green)); 
+  -webkit-background-clip: text; 
+  color: transparent; 
+  text-shadow: 0 0 25px rgba(0, 255, 102, 0.5); 
+}
+
+.metric-card:nth-child(4) .value { 
+  background: linear-gradient(to right, #ffffff, var(--neon-yellow)); 
+  -webkit-background-clip: text; 
+  color: transparent; 
+  text-shadow: 0 0 25px rgba(255, 234, 0, 0.5); 
+}
+
+/* ---------- Panels & Wide Graph Area ---------- */
 .panel {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -265,27 +288,32 @@ body::after {
 }
 
 .graph-panel {
-  padding: 16px 24px 32px;
-  min-height: 520px;
+  padding: 36px 0; /* Remove horizontal padding to stretch graph */
+  min-height: 600px; /* Make graph container significantly larger */
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Ensure nothing breaks out of rounded corners */
+}
+
+.graph-panel h2 {
+  padding: 0 36px; /* Add padding back specifically for the title */
 }
 
 .chart-container {
   flex: 1;
-  width: calc(100% + 50px);
-  min-height: 440px;
+  width: calc(100% + 40px); /* Extend fully to the edges */
+  min-height: 520px; /* Much taller graph */
   position: relative;
-  margin: 10px -25px 0 -25px;
+  margin: 20px -20px 0 -20px; /* Pull into the padded zones of the panel if any */
 }
 
-/* SVG Chart Number Coloring */
+/* SVG Chart Number Coloring for Extreme Edges */
 .chart-container text,
 .recharts-text,
 .recharts-cartesian-axis-tick-value {
   fill: var(--neon-cyan) !important;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
 }
