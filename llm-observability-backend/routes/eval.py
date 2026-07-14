@@ -19,7 +19,7 @@ async def run_eval(payload: EvalRunRequest):
     for case in payload.test_cases:
         rendered_prompt = template.replace("{input}", case.get("input", ""))
         llm_result = await call_llm(rendered_prompt)
-        evaluation = evaluate_response(
+        evaluation = await evaluate_response(
             rendered_prompt, llm_result.text, expected_keywords=case.get("expected_keywords")
         )
         results.append(
