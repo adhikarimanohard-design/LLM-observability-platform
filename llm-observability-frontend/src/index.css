@@ -8,7 +8,6 @@
   --text-main: #ffffff;
   --text-muted: #a1a1aa;
   
-  /* Vibrant Palette */
   --neon-pink: #ff007f;
   --neon-cyan: #00f0ff;
   --neon-purple: #8a2be2;
@@ -35,7 +34,6 @@ body {
   position: relative;
 }
 
-/* Dynamic Multi-Color Animated Background */
 body::before, body::after {
   content: '';
   position: fixed;
@@ -113,6 +111,12 @@ body::after {
   100% { background-position: 300% 50%; }
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .status-pill {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -142,6 +146,31 @@ body::after {
 @keyframes pulse-dot {
   from { transform: scale(0.8); opacity: 0.7; filter: brightness(1); }
   to { transform: scale(1.2); opacity: 1; filter: brightness(1.5); }
+}
+
+.user-pill {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.user-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 /* ---------- Vibrant Metric Cards ---------- */
@@ -178,7 +207,6 @@ body::after {
   transition: opacity 0.4s ease;
 }
 
-/* Assigning variety of colors to cards */
 .metric-card:nth-child(1) { --card-color-1: var(--neon-cyan); --card-color-2: var(--neon-purple); }
 .metric-card:nth-child(2) { --card-color-1: var(--neon-pink); --card-color-2: var(--neon-orange); }
 .metric-card:nth-child(3) { --card-color-1: var(--neon-yellow); --card-color-2: var(--neon-green); }
@@ -210,7 +238,7 @@ body::after {
 .metric-card:nth-child(1) .value { background: linear-gradient(to right, #fff, var(--neon-cyan)); -webkit-background-clip: text; color: transparent; }
 .metric-card:nth-child(2) .value { background: linear-gradient(to right, #fff, var(--neon-pink)); -webkit-background-clip: text; color: transparent; }
 
-/* ---------- Panels ---------- */
+/* ---------- Panels & Graph Area ---------- */
 .panel {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -231,6 +259,21 @@ body::after {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 24px;
+}
+
+.graph-panel {
+  padding: 24px;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  flex: 1;
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+  margin: 10px -10px 0;
 }
 
 /* ---------- Inputs & Buttons ---------- */
@@ -299,7 +342,6 @@ button:active { transform: translateY(2px); }
   letter-spacing: 0.2em;
   color: #ffffff;
   
-  /* The core green glow effect */
   text-shadow: 
     0 0 5px #fff,
     0 0 10px #fff,
