@@ -49,30 +49,20 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = useCallback(async (email, password) => {
-    const { data } = await api.post('/api/auth/login', { username: email, password })
-    const validToken = data.access_token || data.token
-    
-    setToken(validToken)
-    localStorage.setItem('llm_obs_token', validToken)
-    
-    const userData = data.user || { username: email, email: email }
-    setUser(userData)
-    localStorage.setItem('llm_obs_user', JSON.stringify(userData))
-    
+    const { data } = await api.post('/api/auth/login', { email, password })
+    setToken(data.access_token)
+    setUser(data.user)
+    localStorage.setItem('llm_obs_token', data.access_token)
+    localStorage.setItem('llm_obs_user', JSON.stringify(data.user))
     setAuthModalOpen(false)
   }, [])
 
   const signup = useCallback(async (name, email, password) => {
-    const { data } = await api.post('/api/auth/signup', { username: name, email, password })
-    const validToken = data.access_token || data.token
-
-    setToken(validToken)
-    localStorage.setItem('llm_obs_token', validToken)
-    
-    const userData = data.user || { username: name, email: email }
-    setUser(userData)
-    localStorage.setItem('llm_obs_user', JSON.stringify(userData))
-    
+    const { data } = await api.post('/api/auth/signup', { name, email, password })
+    setToken(data.access_token)
+    setUser(data.user)
+    localStorage.setItem('llm_obs_token', data.access_token)
+    localStorage.setItem('llm_obs_user', JSON.stringify(data.user))
     setAuthModalOpen(false)
   }, [])
 
