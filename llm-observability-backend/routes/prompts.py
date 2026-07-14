@@ -6,8 +6,8 @@ from bson.errors import InvalidId
 from models.schemas import PromptVersionCreate
 from services.db import prompts_collection, requests_collection
 
-# THIS IS THE MISSING LINE THAT CAUSED THE CRASH
 router = APIRouter()
+
 
 def _serialize(doc) -> dict:
     if not doc:
@@ -18,18 +18,19 @@ def _serialize(doc) -> dict:
         doc["created_at"] = doc["created_at"].isoformat()
     return doc
 
+
 @router.get("/prompts")
 async def list_prompts():
     try:
         pipeline = [
             {
                 "$lookup": {
-                    "from": "requests_collection",
-                    "let": { "pid": { "$toString": "$_id" } },
+                    "from": "requests",  # actual Mongo collection name, not the Python variable name
+                    "let": {"pid": {"$toString": "$_id"}},
                     "pipeline": [
-                        { "$match": { "$expr": { "$eq": ["$prompt_version_id", "$$pid"] } } }
+                        {"$match": {"$expr": {"$eq": ["$prompt_version_id", "$$pid"]}}}
                     ],
-                    "as": "logs"
+                    "as": "logs",
                 }
             },
             {
@@ -38,18 +39,19 @@ async def list_prompts():
                     "template": 1,
                     "created_at": 1,
                     "call_count": {"$size": "$logs"},
-                    "avg_score": {"$avg": "$logs.evaluation.score"}
+                    "avg_score": {"$avg": "$logs.evaluation.score"},
                 }
             },
-            {"$sort": {"created_at": -1}}
+            {"$sort": {"created_at": -1}},
         ]
-        
+
         cursor = prompts_collection.aggregate(pipeline)
         prompts = [_serialize(doc) async for doc in cursor]
 
         return prompts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/prompts")
 async def create_prompt(payload: PromptVersionCreate):
@@ -60,13 +62,16 @@ async def create_prompt(payload: PromptVersionCreate):
 
         doc = payload.model_dump()
         doc["created_at"] = datetime.now(timezone.utc)
-        
+
         result = await prompts_collection.insert_one(doc)
         doc["id"] = str(result.inserted_id)
-        
+
         return _serialize(doc)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/prompts/{prompt_id}")
 async def get_prompt(prompt_id: str):
@@ -74,12 +79,13 @@ async def get_prompt(prompt_id: str):
         doc = await prompts_collection.find_one({"_id": ObjectId(prompt_id)})
         if not doc:
             raise HTTPException(status_code=404, detail="Prompt version not found")
-            
+
         return _serialize(doc)
+    except HTTPException:
+        raise
     except Exception as e:
-        if not isinstance(e, HTTPException):
-            raise HTTPException(status_code=500, detail=str(e))
-        raise e
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.delete("/prompts/{prompt_id}")
 async def delete_prompt(prompt_id: str):
@@ -95,14 +101,14 @@ async def delete_prompt(prompt_id: str):
         result = await prompts_collection.delete_one({"_id": obj_id})
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Prompt not found in database")
-        
+
         await requests_collection.delete_many({
             "$or": [
                 {"prompt_version_id": prompt_id},
-                {"prompt_version_id": obj_id}
+                {"prompt_version_id": obj_id},
             ]
         })
-        
+
         return {"status": "success", "message": "Prompt and logs deleted"}
 
     except HTTPException:
