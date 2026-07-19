@@ -53,9 +53,10 @@ export default function TrendChart({ timeseries, loading }) {
               <XAxis
                 dataKey="bucket"
                 tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
-                hide={timeseries.length > 8}
+                hide={timeseries.length > 12}
                 axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
                 tickLine={false}
+                interval="preserveStartEnd"
               />
               <YAxis yAxisId="left" width={38} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
               <YAxis yAxisId="right" orientation="right" width={46} tick={{ fill: '#565f75', fontSize: 10, fontFamily: 'IBM Plex Mono' }} axisLine={false} tickLine={false} />
@@ -77,6 +78,9 @@ export default function TrendChart({ timeseries, loading }) {
                 strokeWidth={2}
                 fill="url(#latencyGradient)"
                 name="Avg Latency (ms)"
+                dot={{ r: 3, strokeWidth: 0, fill: '#8b5cf6' }}
+                activeDot={{ r: 5 }}
+                isAnimationActive={false}
               />
               <Area
                 yAxisId="right"
@@ -86,6 +90,9 @@ export default function TrendChart({ timeseries, loading }) {
                 strokeWidth={2}
                 fill="url(#costGradient)"
                 name="Cost (USD)"
+                dot={{ r: 3, strokeWidth: 0, fill: '#22d3ee' }}
+                activeDot={{ r: 5 }}
+                isAnimationActive={false}
               />
             </AreaChart>
           </ResponsiveContainer>
